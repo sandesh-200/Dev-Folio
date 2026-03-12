@@ -12,7 +12,8 @@ export interface PostMeta {
   excerpt: string;
   readingTime: string;
   tags?: string[];
-  author?: string; // ← added
+  author?: string;
+  image: string; // ← added
 }
 
 export interface Post extends PostMeta {
@@ -39,7 +40,8 @@ export function getAllPosts(): PostMeta[] {
       excerpt: data.excerpt ?? "",
       readingTime: stats.text,
       tags: data.tags ?? [],
-      author: data.author ?? "Unknown", // ← added
+      author: data.author ?? "Unknown",
+      image: data.image,
     };
   });
 
@@ -68,5 +70,6 @@ export function getPostBySlug(slug: string): Post | null {
     tags: data.tags ?? [],
     content,
     author: data.author ?? "Unknown",
+    image: data.image,
   };
 }
