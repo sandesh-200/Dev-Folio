@@ -1,4 +1,6 @@
+import Image from "next/image";
 import { ReactNode } from "react";
+
 
 // Callout / info box — can be embedded in MDX
 interface CalloutProps {
@@ -78,10 +80,33 @@ export function ProjectDemo({ title, description, href, tech }: ProjectDemoProps
     );
 }
 
+
+export function BlogImage({ src, alt, caption }: { src: string; alt: string; caption?: string }) {
+    return (
+        <figure className="my-10">
+            <Image 
+                src={src} 
+                alt={alt} 
+                width={1200} 
+                height={675} 
+                className="rounded-xl border border-[hsl(var(--border))]"
+            />
+            {caption && (
+                <figcaption className="text-center text-sm text-[hsl(var(--muted-foreground))] mt-4">
+                    {caption}
+                </figcaption>
+            )}
+        </figure>
+    );
+}
+
 // MDX component map
 export const mdxComponents = {
     Callout,
     ProjectDemo,
+    BlogImage,
+
+
     // Override standard elements
     h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
         <h1
