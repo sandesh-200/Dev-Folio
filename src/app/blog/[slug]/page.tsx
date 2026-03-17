@@ -6,6 +6,7 @@ import { Metadata } from "next";
 import { getPostBySlug, getAllPosts } from "@/lib/mdx";
 import { mdxComponents } from "@/components/blog/MDXComponents";
 import { SharePost } from "@/components/blog/SharePost";
+import rehypePrettyCode from "rehype-pretty-code";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -88,7 +89,32 @@ export default async function BlogPostPage({ params }: PageProps) {
 
         {/* MDX Content */}
         <div className="text-[hsl(var(--foreground)/0.85)] leading-[1.8] text-base">
-          <MDXRemote source={post.content} components={mdxComponents} />
+          <MDXRemote
+            source={post.content}
+            components={mdxComponents}
+            options={{
+              mdxOptions: {
+                rehypePlugins: [
+                  [
+                    rehypePrettyCode,
+                    {
+                      theme: {
+                        dark: "github-dark",
+                        light: "github-light",
+                      },
+                      keepBackground: false,
+
+                      onVisitLine(node: { children: string | any[]; }) {
+                        if (node.children.length === 0) {
+                          node.children = [{ type: "text", value: " " }]
+                        }
+                      }
+                    },
+                  ],
+                ],
+              },
+            }}
+          />
         </div>
 
 
