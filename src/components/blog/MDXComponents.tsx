@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ReactNode } from "react";
+import { CodeBlock } from "./CodeBlock";
 
 
 // Callout / info box — can be embedded in MDX
@@ -84,11 +85,11 @@ export function ProjectDemo({ title, description, href, tech }: ProjectDemoProps
 export function BlogImage({ src, alt, caption }: { src: string; alt: string; caption?: string }) {
     return (
         <figure className="my-10">
-            <Image 
-                src={src} 
-                alt={alt} 
-                width={1200} 
-                height={675} 
+            <Image
+                src={src}
+                alt={alt}
+                width={1200}
+                height={675}
                 className="rounded-xl border border-[hsl(var(--border))]"
             />
             {caption && (
@@ -151,10 +152,7 @@ export const mdxComponents = {
         />
     ),
     pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
-        <pre
-            className="bg-[hsl(240_10%_7%)] rounded-lg overflow-x-auto my-6 p-5 text-sm border border-[hsl(var(--border))]"
-            {...props}
-        />
+        <CodeBlock {...props} />
     ),
     hr: () => (
         <hr className="my-10 border-[hsl(var(--border))]" />
