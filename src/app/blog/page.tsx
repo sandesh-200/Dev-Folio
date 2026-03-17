@@ -7,6 +7,17 @@ export const metadata: Metadata = {
   title: "Blog",
   description:
     "Thoughts on engineering, tools, and the craft of software development.",
+  openGraph: {
+    title: "Blog | Sandesh Dhakal",
+    description: "Thoughts on engineering, tools, and the craft of software development.",
+    type: "website",
+    url: "https://sandeshdhakal1.com.np/blog",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog | Sandesh Dhakal",
+    description: "Thoughts on engineering, tools, and the craft of software development.",
+  },
 };
 
 export default function BlogPage() {
