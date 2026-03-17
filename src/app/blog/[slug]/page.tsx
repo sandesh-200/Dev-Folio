@@ -8,6 +8,7 @@ import { mdxComponents } from "@/components/blog/MDXComponents";
 import { SharePost } from "@/components/blog/SharePost";
 import rehypePrettyCode from "rehype-pretty-code";
 
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -17,17 +18,35 @@ export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+// src/app/blog/[slug]/page.tsx
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params; // Await the promise here
   const post = getPostBySlug(slug);
+
   if (!post) return {};
+
   return {
     title: post.title,
     description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: "article",
+      url: `https://0f81-2400-1a00-1b6c-91f3-dc44-9afd-5654-e587.ngrok-free.app/blog/${post.slug}`,
+      images: post.image ? [post.image] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: post.image ? [post.image] : [],
+    },
   };
 }
+
+
+
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
@@ -37,103 +56,107 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound();
   }
 
+
+
   return (
-    <article className="min-h-screen pt-24 pb-20">
-      <div className="max-w-2xl mx-auto px-6 lg:px-8">
-        {/* Back link */}
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors mb-12"
-        >
-          <ArrowLeft size={14} />
-          Blog
-        </Link>
-
-        {/* Post header */}
-        <header className="mb-12 pb-8 border-b border-[hsl(var(--border))]">
-          <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-[hsl(var(--muted-foreground))] mb-4">
-            <time dateTime={post.date}>
-              {new Date(post.date).toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </time>
-            <span>·</span>
-            <span>{post.readingTime}</span>
-            {post.author && (
-              <>
-                <span>·</span>
-                <span>By {post.author}</span>
-              </>
-            )}
-            {post.tags && post.tags.length > 0 && (
-              <>
-                <span>·</span>
-                {post.tags.map((tag) => (
-                  <span key={tag}>{tag}</span>
-                ))}
-              </>
-            )}
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[hsl(var(--foreground))] leading-[1.15]">
-            {post.title}
-          </h1>
-          {post.excerpt && (
-            <p className="mt-4 text-[hsl(var(--muted-foreground))] text-lg leading-relaxed">
-              {post.excerpt}
-            </p>
-          )}
-        </header>
-
-        {/* MDX Content */}
-        <div className="text-[hsl(var(--foreground)/0.85)] leading-[1.8] text-base">
-          <MDXRemote
-            source={post.content}
-            components={mdxComponents}
-            options={{
-              mdxOptions: {
-                rehypePlugins: [
-                  [
-                    rehypePrettyCode,
-                    {
-                      theme: {
-                        dark: "github-dark",
-                        light: "github-light",
-                      },
-                      keepBackground: false,
-
-                      onVisitLine(node: { children: string | any[]; }) {
-                        if (node.children.length === 0) {
-                          node.children = [{ type: "text", value: " " }]
-                        }
-                      }
-                    },
-                  ],
-                ],
-              },
-            }}
-          />
-        </div>
-
-
-        <SharePost
-          title={post.title}
-          url={`https://sandeshdhakal1.com.np/blog/${post.slug}`}
-        />
-
-        {/* Footer */}
-        <div className="mt-16 pt-8 border-t border-[hsl(var(--border))]">
+    <>
+      <article className="min-h-screen pt-24 pb-20">
+        <div className="max-w-4xl mx-auto px-6 lg:px-8">
+          {/* Back link */}
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors mb-12"
           >
             <ArrowLeft size={14} />
-            Back to all posts
+            Blog
           </Link>
+
+          {/* Post header */}
+          <header className="mb-12 pb-8 border-b border-[hsl(var(--border))]">
+            <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-[hsl(var(--muted-foreground))] mb-4">
+              <time dateTime={post.date}>
+                {new Date(post.date).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </time>
+              <span>·</span>
+              <span>{post.readingTime}</span>
+              {post.author && (
+                <>
+                  <span>·</span>
+                  <span>By {post.author}</span>
+                </>
+              )}
+              {post.tags && post.tags.length > 0 && (
+                <>
+                  <span>·</span>
+                  {post.tags.map((tag) => (
+                    <span key={tag}>{tag}</span>
+                  ))}
+                </>
+              )}
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[hsl(var(--foreground))] leading-[1.15]">
+              {post.title}
+            </h1>
+            {post.excerpt && (
+              <p className="mt-4 text-[hsl(var(--muted-foreground))] text-lg leading-relaxed">
+                {post.excerpt}
+              </p>
+            )}
+          </header>
+
+          {/* MDX Content */}
+          <div className="text-[hsl(var(--foreground)/0.85)] leading-[1.8] text-base">
+            <MDXRemote
+              source={post.content}
+              components={mdxComponents}
+              options={{
+                mdxOptions: {
+                  rehypePlugins: [
+                    [
+                      rehypePrettyCode,
+                      {
+                        theme: {
+                          dark: "github-dark",
+                          light: "github-light",
+                        },
+                        keepBackground: false,
+
+                        onVisitLine(node: { children: string | any[]; }) {
+                          if (node.children.length === 0) {
+                            node.children = [{ type: "text", value: " " }]
+                          }
+                        }
+                      },
+                    ],
+                  ],
+                },
+              }}
+            />
+          </div>
+
+
+          <SharePost
+            title={post.title}
+            url={`https://sandeshdhakal1.com.np/blog/${post.slug}`}
+          />
+
+          {/* Footer */}
+          <div className="mt-16 pt-8 border-t border-[hsl(var(--border))]">
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors"
+            >
+              <ArrowLeft size={14} />
+              Back to all posts
+            </Link>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </>
   );
 }
