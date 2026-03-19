@@ -147,12 +147,14 @@ export const mdxComponents = {
     ),
     code: (props: React.HTMLAttributes<HTMLElement>) => (
         <code
-            className="text-[0.875em] px-1.5 py-0.5 rounded bg-[hsl(var(--muted))] text-[hsl(var(--foreground))] font-mono"
+            className="text-[0.875em] px-1.5 py-0.5 rounded  text-[hsl(var(--foreground))] font-mono"
             {...props}
         />
     ),
     pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
-        <CodeBlock {...props} />
+        <div className="my-8 overflow-hidden rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--muted)/0.3)]">
+            <CodeBlock {...props} />
+        </div>
     ),
     hr: () => (
         <hr className="my-10 border-[hsl(var(--border))]" />

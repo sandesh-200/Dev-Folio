@@ -1,0 +1,213 @@
+---
+title: "Hash Functions"
+date: "2026-03-19"
+author: "Sandesh Dhakal"
+tags: ["Cryptography", "Blockchain", "Security", "Computer Science", "Hash Functions", "Hashing", "SHA 256"]
+---
+
+# Understanding Hashing: The Foundation of Blockchain Security
+
+You log into a website. You enter your password. The system verifies it instantly.
+The system does not store your actual password.
+This is where hashing works behind the scenes.
+
+Hashing plays a key role in modern systems. It secures passwords, protects data integrity, and powers blockchain networks. Before working with cryptography or blockchain, you need a clear understanding of hashing.
+
+## What is a Hash Function
+
+A hash function takes input data and produces a fixed length output called a hash.
+
+The input can be anything:
+- a short word  
+- a file  
+- a large dataset  
+
+The output always has the same length, regardless of input size.
+
+Example:
+
+A short string and a large file both produce hashes of equal length when using the same algorithm.
+This makes hash functions useful for comparing data without storing the original content.
+
+Code demo:
+```python
+import hashlib
+
+data = "hello blockchain"
+
+hash_object = hashlib.sha256(data.encode())
+hash_hex = hash_object.hexdigest()
+
+print(data.encode())
+print(hash_object)
+print(hash_hex)
+```
+
+---
+
+## Why hashing is one way
+
+Hashing is designed as a one way process.
+You can generate a hash from data, but you cannot recover the original data from the hash.
+In real systems, this property protects sensitive information.
+
+Example:
+A website stores hashed passwords instead of plain text passwords. When you log in, your input is hashed and compared with the stored hash. Even if the database leaks, attackers cannot retrieve original passwords.
+
+
+## Key properties of hashing
+
+For hashing to work in secure systems, it must satisfy a few properties.
+
+### Deterministic behavior
+
+The same input always produces the same output.
+If you hash the same password multiple times using the same algorithm, the result stays identical. This ensures consistent verification.
+
+### Avalanche effect
+
+A small change in input leads to a completely different hash.
+
+Example:
+Changing a single character in a file produces a hash that looks unrelated to the previous one.
+This prevents attackers from predicting changes.
+
+Code Example:
+```python
+import hashlib
+
+def sha256(data):
+    return hashlib.sha256(data.encode()).hexdigest()
+
+print(sha256("hello"))
+print(sha256("Hello"))
+
+# Observe completely different hashes.
+```
+
+### Pre image resistance
+
+Given a hash, finding the original input is computationally infeasible.
+This ensures that sensitive data remains protected even if hashes are exposed.
+
+## Collision and why it matters
+
+A collision occurs when two different inputs produce the same hash.
+Since hash outputs have fixed length, collisions are theoretically possible.
+In practice, strong algorithms make collisions extremely rare.
+
+Example:
+Algorithms like SHA 256 are designed so that finding a collision requires massive computational effort. This makes them reliable for security systems.
+
+## How blockchain uses hashing
+
+Hashing forms the core of blockchain systems.
+
+### Block linking
+
+Each block contains a hash of the previous block.
+This creates a chain structure.
+If someone modifies a past transaction, the hash changes. This breaks the chain and exposes tampering.
+
+### Merkle trees
+
+A blockchain may contain thousands of transactions in a block.
+Instead of verifying each one individually, transactions are grouped into a structure called a Merkle tree.
+This structure produces a single hash called the Merkle root.
+The system verifies data using this root instead of checking every transaction.
+
+### Proof of work
+
+In proof of work systems, miners solve a hash based puzzle.
+They try different inputs until they find a hash with a required pattern.
+
+Example:
+A valid hash might need to start with a certain number of zeros.
+Finding this hash takes effort. Verifying it takes minimal effort.
+
+Code Example:
+```python
+import hashlib
+
+def mine_block(data,difficulty):
+    nonce = 0
+    while True:
+        text = data + str(nonce)
+        hash_result = hashlib.sha256(text.encode()).hexdigest()
+        if hash_result.startswith("0"*difficulty):
+            return nonce,hash_result
+        nonce += 1
+
+nonce,hash_found = mine_block("block data",4)
+
+print("Nonce: ",nonce)
+print("Hash: ",hash_found)
+
+# Rought idea how it works
+# Attempt 0: "block data0" → hash probably didn't start with 0000
+# Attempt 1: "block data1" → hash probably didn't start with 0000
+# Attempt 2: "block data2" → hash probably didn't start with 0000
+
+# ...
+
+# Attempt 226,324: "block data226324" → hash probably didn't start with 0000
+# Attempt 226,325: "block data226325" → BINGO! Hash starts with 0000
+
+# The Winning Combination
+# Input string: "block data226325"
+
+# SHA-256 Hash: 0000b55ea7ba1265fc3c0405db5f68763eb81e9e91f2769424289e6d09e77877
+
+# Verification: ✓ Starts with 0000 (4 zeros = difficulty 4)
+```
+
+This ensures fairness and security in the network.
+
+## Hashing vs encryption
+
+Hashing and encryption serve different purposes.
+Hashing focuses on data integrity. Encryption focuses on data privacy.
+Hashing is one way. Encryption is reversible with a key.
+
+Example:
+
+- Hashing checks whether a password is correct  
+- Encryption protects messages during transmission  
+
+Blockchain systems rely heavily on hashing to ensure data remains unchanged.
+
+## Real world use cases of hashing
+
+Hashing is used across many systems.
+
+In authentication systems, hashing protects passwords.  
+In file storage, hashing verifies file integrity.  
+
+This example shows how hashing can be used to verify data integrity.
+
+```python
+import hashlib
+
+data = "transaction data"
+original_hash = hashlib.sha256(data.encode()).hexdigest()
+
+# Later
+received_data = "transaction data"
+newhash = hashlib.sha256(received_data.encode()).hexdigest()
+
+if original_hash == newhash:
+    print("Data is intact")
+else:
+    print("Data has been altered")
+```
+
+In blockchain, hashing links blocks and secures transactions.  
+In digital signatures, hashing ensures data consistency before signing.  
+
+These use cases depend on the same core idea. Data is transformed into a fixed representation that is easy to verify but hard to reverse.
+
+## Final thoughts
+
+Hashing builds trust in digital systems.
+It ensures that data remains consistent, secure, and verifiable. Whether you are working with authentication systems or blockchain networks, hashing plays a central role.
+Understanding hashing is a strong first step into cryptography and distributed systems.
