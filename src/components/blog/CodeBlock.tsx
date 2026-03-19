@@ -37,7 +37,20 @@ export function CodeBlock({
                 {copied ? "Copied" : "Copy"}
             </button>
 
-            <pre {...props}>{children}</pre>
+            <pre
+                className="
+    w-full 
+    overflow-x-auto 
+    rounded-xl 
+    border border-[hsl(var(--border))] 
+    p-5 
+    leading-relaxed
+    font-mono
+  "
+                {...props}
+            >
+                {children}
+            </pre>
         </div>
     );
 }
