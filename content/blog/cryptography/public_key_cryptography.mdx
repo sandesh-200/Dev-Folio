@@ -1,0 +1,178 @@
+---
+title: "Public and Private Keys"
+date: "2026-03-23"
+author: "Sandesh Dhakal"
+tags: ["Cryptography", "Blockchain", "Security", "Computer Science", "Public Key Cryptography", "Digital Signatures", "Bitcoin", "ECDSA"]
+---
+
+# Your Digital Keyring: Understanding Public and Private Keys in Blockchain
+
+Have you ever wondered what actually happens when you send Bitcoin or sign a transaction on a blockchain?
+It is not like logging into a bank with a username and password. Instead, the entire system relies on a concept called public key cryptography.
+
+If terms like private keys, seed phrases, or digital signatures sound confusing, this guide will break them down into simple concepts so you understand how you truly own your digital assets.
+
+---
+
+## The dynamic duo: private key vs public key
+
+In blockchain systems, your identity is not your name. It is a pair of cryptographic keys.
+Think of it like a mailbox system.
+
+### Private key (your secret)
+The private key is your most important piece of data.
+It is a long string of numbers and letters that acts like the key to your safe. Whoever owns this key controls the assets linked to it.
+If someone gets your private key, they can fully control your funds.
+
+Rule:
+Never share your private key.
+
+---
+
+### Public key (your address)
+
+The public key is derived from your private key using a mathematical algorithm called ECDSA (Elliptic Curve Digital Signature Algorithm).
+It acts like your public address.
+
+You can safely share it with others so they can:
+- send you cryptocurrency  
+- verify your identity  
+
+### This is how public key is derived from private key:
+```python
+from ecdsa import SigningKey,SECP256k1
+
+private_key = SigningKey.generate(curve=SECP256k1)
+
+public_key = private_key.get_verifying_key()
+
+print("Private Key: ",private_key.to_string().hex())
+print("Public Key: ",public_key.to_string().hex())
+
+```
+
+
+
+---
+
+## The magic of one way math
+
+The relationship between private and public keys is based on one way computation.
+You can easily generate a public key from a private key.
+But you cannot reverse the process.
+This property is what makes blockchain secure.
+Even with powerful computers, deriving a private key from a public key is computationally infeasible.
+
+---
+
+## Key ownership equals asset ownership
+
+In blockchain, ownership is not tied to identity. It is tied to control of a private key.
+There is a popular saying:
+Not your keys, not your coins.
+
+There is no password reset option. No central authority can recover your assets.
+If you lose your private key, you lose access permanently.
+
+---
+
+## The signature flow: how a transaction works
+
+How do you prove ownership without exposing your private key?
+This is where digital signatures come in.
+
+### Step 1: create
+You decide to send a transaction.
+
+### Step 2: sign
+You use your private key to generate a digital signature.
+This signature is unique to that specific transaction.
+
+### Step 3: send
+You broadcast the transaction along with the signature to the network.
+
+### Step 4: verify
+The network uses your public key to verify the signature.
+The math ensures that only the holder of the private key could have created that signature.
+
+### Step 5: accept
+Once verified, the transaction is added to a block and becomes part of the blockchain.
+
+### Code demo:
+```python
+# 1. Create transaction
+# 2. Sign with private key → digital signature
+# 3. Send tx + signature
+# 4. Network verifies signature using public key
+# 5. Tx accepted if valid
+
+from ecdsa import SigningKey,SECP256k1
+
+# Generate a private key
+private_key = SigningKey.generate(curve=SECP256k1)
+public_key = private_key.get_verifying_key()
+
+message = b"Send 1 BTC to Alice" #Basically message here represents transaction
+
+#Sign the message
+signature = private_key.sign(message)
+print("Signature: ",signature.hex())
+
+#Verify the signature
+
+is_valid = public_key.verify(signature,message)
+print("Signature valid?", is_valid)
+
+```
+
+---
+
+
+
+## Why signatures are powerful
+
+Digital signatures allow you to prove ownership without revealing your private key.
+This ensures:
+- authenticity  
+- integrity  
+- security  
+
+It is one of the core building blocks of blockchain systems.
+
+---
+
+## Keeping your keys safe
+
+Since your private key controls everything, security is critical.
+
+### Never share it
+
+Anyone with your private key has full control over your assets.
+
+---
+
+### Avoid storing in plain text
+
+Do not store keys in notes apps or unencrypted files.
+These can be easily accessed by malware or attackers.
+
+---
+
+### Use secure wallets
+
+Use trusted wallets designed to protect your keys.
+Examples include:
+- hardware wallets (Ledger, Trezor)  
+- reputable software wallets  
+
+Hardware wallets keep your private key offline, reducing exposure to online attacks.
+
+---
+
+## Final thoughts
+
+Your private key is your digital identity.
+It is your proof of ownership in a decentralized world.
+Blockchain removes the need for trust in institutions and replaces it with trust in mathematics.
+As long as you control your private key, you control your assets.
+Understanding this concept is a major step toward mastering blockchain and cryptography.
