@@ -8,6 +8,7 @@ import { mdxComponents } from "@/components/blog/MDXComponents";
 import { SharePost } from "@/components/blog/SharePost";
 import { BlogSidebar } from "@/components/blog/BlogSidebar";
 import rehypePrettyCode from "rehype-pretty-code";
+import CommentSection from "@/components/blog/CommentSection";
 
 interface PageProps {
   params: Promise<{ slug: string[] }>;
@@ -84,13 +85,13 @@ export default async function BlogPostPage({ params }: PageProps) {
         <div className={`mx-auto px-6 lg:px-8 ${isTopicMode ? "max-w-7xl" : "max-w-4xl"}`}>
           <div className={isTopicMode ? "flex flex-col lg:flex-row gap-12" : ""}>
             {isTopicMode && (
-              <BlogSidebar 
-                mainSlug={mainSlug} 
-                subtopics={subtopics} 
-                activeSubtopic={subtopicSlug} 
+              <BlogSidebar
+                mainSlug={mainSlug}
+                subtopics={subtopics}
+                activeSubtopic={subtopicSlug}
               />
             )}
-            
+
             <div className="flex-1 min-w-0">
               {/* Back link */}
               <Link
@@ -172,6 +173,8 @@ export default async function BlogPostPage({ params }: PageProps) {
                 title={post.title}
                 url={`https://sandeshdhakal1.com.np/blog/${slug.join('/')}`}
               />
+
+              <CommentSection />
 
               {/* Footer */}
               <div className="mt-16 pt-8 border-t border-[hsl(var(--border))]">
