@@ -2,6 +2,8 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import readingTime from "reading-time";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 const CONTENT_DIR = path.join(process.cwd(), "content", "blog");
 
@@ -132,6 +134,13 @@ export function getTopicSubtopics(slug: string) {
       return {
         slug: subSlug,
         title: data.title ?? subSlug,
+        date: data.date ?? "1970-01-01",
       };
-    });
+    })
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 }
+
+export const mdxOptions = {
+  remarkPlugins: [remarkMath],
+  rehypePlugins: [rehypeKatex],
+};

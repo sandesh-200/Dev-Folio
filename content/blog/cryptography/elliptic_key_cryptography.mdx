@@ -1,0 +1,119 @@
+---
+title: "Elliptic Curve Cryptography"
+date: "2026-04-08"
+author: "Sandesh Dhakal"
+tags:
+  [
+    "Cryptography",
+    "Elliptic Curve Cryptography",
+    "ECC",
+    "Public Key Cryptography",
+    "secp256k1",
+    "Mathematics",
+    "Security",
+    "ECDSA"
+  ]
+image: "/images/elliptic_curve.png"
+---
+# The Mathematics Behind Elliptic Curve Cryptography
+
+In my latest posts, I have been explaining the mathematics behind various digital technologies including security. Previously, I explained how Elliptic Curve Cryptography (ECC) is used to create a Public Key out of a Private Key.
+
+## ECC: The Game of Geometry
+
+Forget basic division and multiplication; on elliptic curves, math is a game of geometry.
+
+## What is an Elliptic Curve?
+
+Before diving into how the math works, let's understand the foundation.
+
+An elliptic curve is defined by a simple cubic equation known as the **Weierstrass equation**:
+
+$$
+y^2 = x^3 + ax + b
+$$
+
+where $a$ and $b$ are constants chosen so that the curve is smooth (no cusps or self-intersections).
+
+This equation creates a beautiful, symmetric, closed curve that looks somewhat like a tilted "S" or a loop lying on its side. All cryptographic operations in ECC happen using points that lie exactly on this curve.
+
+<BlogImage 
+  src="/images/elliptic_curve.png" 
+  alt="Elliptic Curve"  
+/>
+
+## The Secret Geometry of ECC
+
+We usually think of mathematics as moving along a straight number line. In Elliptic Curve Cryptography, however, everything happens on this closed curve. 
+
+The real power comes from the fact that ECC creates a **one-way function**: it is easy to go forward (compute the Public Key from the Private Key), but extremely hard to go backward (recover the Private Key from the Public Key).
+
+## Point Addition
+
+Let me explain the Point Addition algorithm — the core operation that makes ECC work.
+
+### Adding Two Points ($P + Q = R$)
+
+Here is how you add any two distinct points on the curve without a calculator:
+
+**Step A:** Draw a straight line between $P$ and $Q$.  
+**Step B:** Where that line intersects the curve again is another point (we call it the "helper point").  
+**Step C:** Reflect ("flip") that helper point across the x-axis.
+
+You will land exactly on the result point $R$. No matter where $P$ and $Q$ are placed (as long as the line is straight), you always get the same $R$.
+
+This geometric approach (using lines instead of traditional algebra) is what gives ECC its strong security against hackers.
+
+<img src="https://miro.medium.com/v2/resize:fit:1400/1*g4yZgYtrcHG_LgaHeUDYTA.png" alt="Elliptic Curve Point Addition" />
+
+### Adding a Point to Itself ($P + P = 2P$)
+
+What if you want to add a point to itself? You can't draw a straight line through the same point twice. Instead, you draw a **tangent line** at point $P$ (a line that just touches the curve at $P$).
+
+This tangent line will intersect the curve at another point. Then, just like before, you reflect that intersection point across the x-axis to get the final result $2P$.
+
+<img src="https://miro.medium.com/v2/resize:fit:1400/1*E84vwx0HKsQ6w4mh-cXbWA.png" alt="Elliptic Curve Point Doubling" />
+
+## Where does the safety come from?
+
+To generate the Public Key, your device repeatedly performs point addition millions or billions of times — for example:
+
+$$
+P + P + P + \dots \ (2^m \ \text{times}) = \text{final point on the curve}
+$$
+
+The final point becomes your **Public Key**.  
+The huge number of operations ($2^m$) becomes your **Private Key**.
+
+Looking at the final Public Key point, it is computationally infeasible to figure out how many "bounces" (additions) happened to reach there. The path is so unpredictable — like a bouncing ball on the curve — that reversing the process is practically impossible.
+
+This is the beautiful "trapdoor" of elliptic curves.
+
+## Takeaway Points
+
+- **The Line rule**: Any straight line drawn through two points on the curve will always intersect at a third point.
+- **The Reflection rule**: We always reflect the third intersection point across the x-axis to get the final result.
+- **Mathematical trapdoor**: Jumping forward (computing the Public Key) is easy, but jumping backward (to find the Private Key) is extremely hard.
+
+## Real-World Example: secp256k1 Curve
+
+The exact same mathematics is used in real life with the **secp256k1** elliptic curve — the curve used by Bitcoin, Ethereum, and many other cryptocurrencies.
+
+You can see it in action with this simple Python code:
+
+```python
+from ecdsa import SigningKey, SECP256k1
+
+# Generate private key on secp256k1 curve
+private_key = SigningKey.generate(curve=SECP256k1)
+
+# Derive public key from private key
+public_key = private_key.get_verifying_key()
+
+print("Private Key: ", private_key.to_string().hex())
+print("Public Key:  ", public_key.to_string().hex())
+```
+
+## Final Thoughts
+
+Elliptic Curve Cryptography transforms simple geometry into one of the strongest pillars of modern digital security. Starting from the basic equation $y^2 = x^3 + ax + b$, through point addition and doubling, we get a powerful one-way function that secures cryptocurrencies and protects our online communications every day.
