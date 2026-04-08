@@ -8,7 +8,6 @@ import { mdxComponents } from "@/components/blog/MDXComponents";
 import { SharePost } from "@/components/blog/SharePost";
 import { BlogSidebar } from "@/components/blog/BlogSidebar";
 import rehypePrettyCode from "rehype-pretty-code";
-import CommentSection from "@/components/blog/CommentSection";
 
 interface PageProps {
   params: Promise<{ slug: string[] }>;
@@ -48,7 +47,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: post.title,
       description: post.excerpt,
       type: "article",
-      url: `https://0f81-2400-1a00-1b6c-91f3-dc44-9afd-5654-e587.ngrok-free.app/blog/${post.slug}`,
+      url: `https://sandeshdhakal1.com.np/blog/${post.slug}`,
       images: post.image ? [post.image] : [],
     },
     twitter: {
@@ -173,8 +172,6 @@ export default async function BlogPostPage({ params }: PageProps) {
                 title={post.title}
                 url={`https://sandeshdhakal1.com.np/blog/${slug.join('/')}`}
               />
-
-              <CommentSection />
 
               {/* Footer */}
               <div className="mt-16 pt-8 border-t border-[hsl(var(--border))]">
