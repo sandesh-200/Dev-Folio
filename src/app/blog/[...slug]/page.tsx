@@ -63,6 +63,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 
 
+import { mdxOptions } from "@/lib/mdx";
+import "katex/dist/katex.min.css";
+
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
   const mainSlug = slug[0];
@@ -76,8 +79,6 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const subtopics = getTopicSubtopics(mainSlug);
   const isTopicMode = subtopics.length > 0;
-
-
 
   return (
     <>
@@ -147,7 +148,9 @@ export default async function BlogPostPage({ params }: PageProps) {
                   components={mdxComponents}
                   options={{
                     mdxOptions: {
+                      remarkPlugins: mdxOptions.remarkPlugins,
                       rehypePlugins: [
+                        ...mdxOptions.rehypePlugins,
                         [
                           rehypePrettyCode,
                           {
